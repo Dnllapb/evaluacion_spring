@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+spring:
+  data:
+    mongodb:
+      url: mongodb://localhost:27017
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/prueba
+    username: postgres
+    password: 1012
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
