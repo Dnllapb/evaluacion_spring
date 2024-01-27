@@ -1,39 +1,38 @@
 package com.autocalificablespring.autocalificable.service;
 
+import com.autocalificablespring.autocalificable.domain.dto.BookingDto;
 import com.autocalificablespring.autocalificable.domain.entity.BookingMongo;
-import com.autocalificablespring.autocalificable.repository.BookingRepositoryMongo;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.autocalificablespring.autocalificable.domain.repository.BookingRepositoryMongo;
+import com.autocalificablespring.autocalificable.mapper.BookingMapperMongo;
 
 import java.util.List;
-import java.util.Optional;
 
-public class BookingServiceMongo {
-    @Autowired
-    BookingRepositoryMongo bookingRepositoryMongo;
+public class BookingServiceMongo implements BookingService<BookingDto>{
+    private final BookingRepositoryMongo bookingRepositoryMongo;
+    private final BookingMapperMongo mapper;
 
-    public void save (BookingMongo bookingMongo)
-    {
-        bookingRepositoryMongo.save(bookingMongo);
+    public BookingServiceMongo(BookingRepositoryMongo bookingRepositoryMongo, BookingMapperMongo mapper) {
+        this.bookingRepositoryMongo = bookingRepositoryMongo;
+        this.mapper = mapper;
     }
-    public List<BookingMongo> findAll() {
-
-        List<BookingMongo> bookingMongoList = bookingRepositoryMongo.findAll();
-        if (bookingMongoList.isEmpty())
-        {
-            throw new RuntimeException("No hay reservas por consultar");
-        }
-        return bookingMongoList;
+    @Override
+    public void save(BookingDto dto) {
+        BookingMongo booking = mapper.toEntity(dto);
+        bookingRepositoryMongo.save(booking);
     }
-
-    public Optional<BookingMongo> findById(String id)
-    {
-        return bookingRepositoryMongo.findById(id);
+    @Override
+    public BookingDto findById(Object id) throws Exception {
+       BookingMongo bookingMongo = bookingRepositoryMongo.findById(id.toString())
+               .orElseThrow(()-> new Exception("Reserva no encontrada" + id));
+       return mapper.toDto(bookingMongo);
     }
-    public void deleteById(String id)
-    {
-        bookingRepositoryMongo.deleteById(id);
+    @Override
+    public List<BookingDto> findAll() {
+        List<BookingMongo> mongoList = bookingRepositoryMongo.findAll();
+        return mapper.toDtoList(mongoList);
     }
-
-
-
+    @Override
+    public void delete(Object id) {
+       bookingRepositoryMongo.deleteById(id.toString());
+    }
 }

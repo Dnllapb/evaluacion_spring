@@ -1,4 +1,4 @@
-package com.autocalificablespring.autocalificable.repository;
+package com.autocalificablespring.autocalificable.domain.repository;
 
 import com.autocalificablespring.autocalificable.domain.entity.BookingMongo;
 import org.springframework.data.mongodb.repository.MongoRepository;
